@@ -1,9 +1,11 @@
-create type member_type as enum ('junior', 'social', 'senior');
+-- TYPES
+create type member_type as enum ('associate', 'junior', 'social', 'senior');
 
 create type practice_night as enum ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
 
 create type gender as enum ('m', 'f');
 
+-- TABLES
 create table team
 (
     name           varchar(20) primary key,
@@ -25,7 +27,27 @@ create table member
     foreign key (team) references team (name)
 );
 
+create table type_fee
+(
+    type member_type primary key,
+    fee  smallint not null
+);
+
+create table tour
+(
+    id   integer primary key,
+    name varchar(30) not null
+);
+
+create table tour_entry
+(
+    member_id integer,
+    tour_id   integer,
+    year      integer
+);
+
+-- VIEWS
 create view member_name_and_team as
-select concat(m.lastname, ' ', m.firstname), t.name
+select concat(m.lastname, ' ', m.firstname) as fullname, t.name as teamname
 from member m
          join team t on m.team = t.name;
