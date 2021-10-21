@@ -44,3 +44,67 @@ select *
 from member m
          full outer join type_fee tf
                          on m.member_type = tf.type;
+-- ====================================================================================================================
+select te.member_id
+from tour_entry te
+where te.tour_id in (select t.id
+                     from tour t
+                     where t.type = 'open'
+);
+
+-- will return the same result as the query with a subquery above
+select te.member_id
+from tour_entry te
+         inner join tour t
+                    on t.type = 'open'
+                        and te.tour_id = t.id;
+
+-- get all members who have entered ANY tours
+select concat(m.lastname, ' ', m.firstname)
+from member m
+where exists(select * from tour_entry te where te.member_id = m.id);
+
+-- is the same as the query above
+select distinct concat(m.lastname, ' ', m.firstname)
+from member m
+         inner join tour_entry te on m.id = te.member_id;
+
+-- get all members who have NOT entered ANY tours
+select concat(m.lastname, ' ', m.firstname)
+from member m
+where not exists(select * from tour_entry te where te.member_id = m.id);
+
+select *
+from member m
+where not exists(select *
+                 from tour_entry te,
+                      tour t
+                 where te.member_id = m.id
+                   and te.tour_id = t.id
+                   and t.type = 'open');
+
+select *
+from member m
+where m.handicap < (select handicap from member where id = 119);
+
+select *
+from member m
+where m.handicap < (select avg(handicap) from member);
+
+select *
+from member m
+where m.member_type = 'junior'
+  and m.handicap < (select avg(handicap) from member where member_type = 'senior');
+
+-- insert a record for every JUNIOR member
+insert into tour_entry
+    (member_id, tour_id, year)
+select m.id, 40, 2017
+from member m
+where m.member_type = 'junior';
+
+delete
+from tour_entry te
+where te.tour_id = 25
+  and te.year = 2019
+  and te.member_id in (select m.id from member m where m.handicap > 100);
