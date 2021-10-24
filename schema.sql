@@ -5,6 +5,8 @@ create type practice_night as enum ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 's
 
 create type gender as enum ('m', 'f');
 
+create type tour_type as enum ('open', 'social');
+
 -- TABLES
 create table team
 (
@@ -23,8 +25,10 @@ create table member
     join_date   timestamp,
     gender      gender,
     team        varchar(20),
+    coach_id integer,
 
-    foreign key (team) references team (name)
+    foreign key (team) references team (name),
+    foreign key (coach_id) references member(id)
 );
 
 create table type_fee
@@ -36,7 +40,8 @@ create table type_fee
 create table tour
 (
     id   integer primary key,
-    name varchar(30) not null
+    name varchar(30) not null,
+    type tour_type default 'social'
 );
 
 create table tour_entry
