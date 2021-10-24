@@ -108,3 +108,45 @@ from tour_entry te
 where te.tour_id = 25
   and te.year = 2019
   and te.member_id in (select m.id from member m where m.handicap > 100);
+-- ====================================================================================================================
+-- members who have a coach
+select 'has coach', m.firstname
+from member m
+         inner join member c
+                    on m.coach_id = c.id;
+
+-- coach names
+select distinct concat(c.firstname, ' ', c.lastname)
+from member m
+         join member c
+              on m.coach_id = c.id;
+
+-- who is being coached with a lower handicap?
+select m.firstname
+from member m
+         join member c
+              on m.coach_id = c.id
+where m.handicap > c.handicap;
+
+-- list the names of all members and the names of their coaches
+select m.firstname as m_first, m.lastname as m_last, c.firstname as c_first, c.lastname as c_last
+from member m
+         left join member c
+                   on m.coach_id = c.id;
+
+-- show all members that have entered BOTH tours 24 AND 36
+select m.id
+from member m
+where exists(select * from tour_entry where tour_id = 24 and member_id = m.id)
+  and exists(select * from tour_entry where tour_id = 36 and member_id = m.id);
+
+select te.member_id
+from tour_entry te
+where te.tour_id = 24
+  and exists(select * from tour_entry te2 where te2.tour_id = 36 and te2.member_id = te.member_id);
+
+select e1.member_id
+from tour_entry e1
+inner join tour_entry e2
+on e1.member_id = e2.member_id
+and e1.tour_id = 24 and e2.tour_id = 36;
