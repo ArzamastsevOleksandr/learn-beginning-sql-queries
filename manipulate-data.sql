@@ -147,6 +147,27 @@ where te.tour_id = 24
 
 select e1.member_id
 from tour_entry e1
-inner join tour_entry e2
-on e1.member_id = e2.member_id
-and e1.tour_id = 24 and e2.tour_id = 36;
+         inner join tour_entry e2
+                    on e1.member_id = e2.member_id
+                        and e1.tour_id = 24 and e2.tour_id = 36;
+-- ====================================================================================================================
+-- get team name and its manager details
+select t.name, t.manager_id, m.lastname, m.firstname
+from team t
+         inner join member m
+                    on t.manager_id = m.id;
+
+-- get member name and his coach name
+select m1.lastname as m_last, m2.lastname as manager_last
+from member m1
+         inner join team t on m1.team = t.name
+         inner join member m2 on t.manager_id = m2.id;
+
+select m1.lastname as member_last, m2.lastname as manager_last
+from member m1, team t, member m2
+where m1.team = t.name and t.manager_id = m2.id;
+
+-- find teams whose managers are not members of the team
+select t.name, managers.lastname as m_last
+from member managers, team t
+where t.manager_id = managers.id and (managers.team is null or managers.team <> t.name);

@@ -11,7 +11,8 @@ create type tour_type as enum ('open', 'social');
 create table team
 (
     name           varchar(20) primary key,
-    practice_night practice_night
+    practice_night practice_night,
+    manager_id     bigint unique
 );
 
 create table member
@@ -25,11 +26,15 @@ create table member
     join_date   timestamp,
     gender      gender,
     team        varchar(20),
-    coach_id integer,
+    coach_id    integer,
 
     foreign key (team) references team (name),
-    foreign key (coach_id) references member(id)
+    foreign key (coach_id) references member (id)
 );
+
+alter table team
+    add constraint team_manager_fkey
+        foreign key (manager_id) references member (id);
 
 create table type_fee
 (
