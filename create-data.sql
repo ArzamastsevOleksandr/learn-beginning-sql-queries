@@ -14,7 +14,29 @@ values (118, 'McKenzie', 'Melissa', '123321', 10, '05/10/1999', 'f', 'TeamA', 'j
        (123, 'Beck', 'Sarah', '101010', 10, '05/5/1994', 'f', 'TeamB', null, 124),
        (124, 'Cruise', 'Adam', '202020', 40, '05/4/1993', 'm', 'TeamA', null, null),
        (125, 'Bloch', 'Joshua', '232323', 31, '05/3/1992', 'm', 'TeamB', 'senior', null),
-       (126, 'Kant', 'Kant', '141414', 13, '05/2/1991', 'm', null, null, null);
+       (126, 'Kant', 'Kant', '141414', 13, '05/2/1991', 'm', null, null, null),
+       (127, 'Ex', 'Am', '141414', 13, '05/2/1991', 'm', null, null, null);
+
+
+insert into club_a
+    (member_id, lastname, handicap, member_type)
+values (118, 'McKenzie', 10, 'junior'),
+       (119, 'Lock', 45, 'senior'),
+       (120, 'Jarah', null, 'senior'),
+       (121, 'Soyer', 25, 'senior'),
+       (122, 'Kwin', 20, 'junior'),
+       (123, 'Beck', 10, null),
+       (124, 'Cruise', 40, null);
+
+insert into club_b
+    (mem_id, familyname, grade, hand_cap)
+values (120, 'Jarah', 'senior', null),
+       (121, 'Soyer', 'senior', 25),
+       (122, 'Kwin', 'junior', 20),
+       (123, 'Beck', null, 10),
+       (124, 'Cruise', null, 40),
+       (125, 'Bloch', 'senior', 31),
+       (126, 'Kant', null, 13);
 
 update team
 set manager_id = 124
@@ -50,4 +72,9 @@ values (118, 24, 2014),
        (119, 25, 2015),
        (120, 36, 2015),
        (121, 38, 2014),
-       (122, 40, 2016);
+       (122, 40, 2016),
+       (127, 24, 2016),
+       (127, 25, 2016),
+       (127, 36, 2016),
+       (127, 38, 2016),
+       (127, 40, 2016);
