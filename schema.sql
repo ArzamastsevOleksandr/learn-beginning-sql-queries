@@ -36,6 +36,26 @@ alter table team
     add constraint team_manager_fkey
         foreign key (manager_id) references member (id);
 
+create table club_a
+(
+    member_id bigint primary key,
+    lastname varchar(20),
+    handicap integer,
+    member_type member_type,
+
+    foreign key (member_id) references member(id)
+);
+
+create table club_b
+(
+    mem_id bigint primary key,
+    familyName varchar(20),
+    grade member_type,
+    hand_cap integer,
+
+    foreign key (mem_id) references member(id)
+);
+
 create table type_fee
 (
     type member_type primary key,

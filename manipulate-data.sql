@@ -164,10 +164,170 @@ from member m1
          inner join member m2 on t.manager_id = m2.id;
 
 select m1.lastname as member_last, m2.lastname as manager_last
-from member m1, team t, member m2
-where m1.team = t.name and t.manager_id = m2.id;
+from member m1,
+     team t,
+     member m2
+where m1.team = t.name
+  and t.manager_id = m2.id;
 
 -- find teams whose managers are not members of the team
 select t.name, managers.lastname as m_last
-from member managers, team t
-where t.manager_id = managers.id and (managers.team is null or managers.team <> t.name);
+from member managers,
+     team t
+where t.manager_id = managers.id
+  and (managers.team is null or managers.team <> t.name);
+-- ====================================================================================================================
+-- ensure UNION compatibility by specifying the sequence of columns
+-- no duplicates
+select ca.member_id, ca.lastname, ca.handicap, ca.member_type
+from club_a ca
+union
+select cb.mem_id, cb.familyname, cb.hand_cap, cb.grade
+from club_b cb;
+-- with duplicates
+select ca.member_id, ca.lastname, ca.handicap, ca.member_type
+from club_a ca
+union all
+select cb.mem_id, cb.familyname, cb.hand_cap, cb.grade
+from club_b cb;
+
+-- get member ids who have entered either tour 24 or 36
+select distinct e1.member_id
+from tour_entry e1
+where e1.tour_id in (24, 36);
+
+select distinct e1.member_id
+from tour_entry e1
+where e1.tour_id = 24
+   or e1.tour_id = 36;
+
+select e1.member_id
+from tour_entry e1
+where e1.tour_id = 24
+union
+select e2.member_id
+from tour_entry e2
+where e2.tour_id = 36;
+
+-- will not get all rows because some members have a NULL in member_type
+select *
+from member m
+         inner join type_fee tf
+                    on m.member_type = tf.type;
+-- will get all members with NULLs for the corresponding type_fee columns
+select *
+from member m
+         left join type_fee tf
+                   on m.member_type = tf.type;
+-- the same as above
+select *
+from type_fee tf
+         right join member m
+                    on tf.type = m.member_type;
+-- will get all rows from the type_fee
+select *
+from member m
+         right join type_fee tf
+                    on m.member_type = tf.type;
+
+-- will get all rows from both tables
+select m.lastname, tf.type, tf.fee
+from member m
+         full join type_fee tf
+                   on tf.type = m.member_type;
+-- an equivalent of the query above
+select m.lastname, tf.type, tf.fee
+from member m
+         left join type_fee tf on tf.type = m.member_type
+union
+select m.lastname, tf.type, tf.fee
+from member m
+         right join type_fee tf on tf.type = m.member_type;
+
+-- find member ids who have entered BOTH tours 24 AND 36
+select e1.member_id
+from tour_entry e1
+where e1.tour_id = 24
+intersect
+select e2.member_id
+from tour_entry e2
+where e2.tour_id = 36;
+
+-- find member data who have entered BOTH tours 24 AND 36
+select *
+from (select e1.member_id
+      from tour_entry e1
+      where e1.tour_id = 24
+      intersect
+      select e2.member_id
+      from tour_entry e2
+      where e2.tour_id = 36) inter
+         inner join member m
+                    on m.id = inter.member_id;
+-- same as above
+select *
+from member m
+where m.id in (select e1.member_id
+               from tour_entry e1
+               where e1.tour_id = 24
+               intersect
+               select e2.member_id
+               from tour_entry e2
+               where e2.tour_id = 36);
+-- an intersection between 2 tables
+select *
+from club_a ca,
+     club_b cb
+where ca.member_id = cb.mem_id
+  and ca.member_type = cb.grade;
+
+-- find the difference between 2 tables
+select ca.lastname, ca.handicap, ca.member_type
+from club_a ca
+    except
+select cb.familyname, cb.hand_cap, cb.grade
+from club_b cb;
+-- same as above
+select ca.lastname, ca.handicap, ca.member_type
+from club_a ca
+where ca.lastname not in (
+    select cla.lastname
+    from club_a cla
+             inner join club_b clb
+                        on cla.member_id = clb.mem_id
+);
+-- find all members who have not entered tour 36
+select e.member_id
+from tour_entry e
+    except
+select te.member_id
+from tour_entry te
+where te.tour_id = 36;
+-- same as above
+select *
+from tour_entry e1
+where e1.member_id not in (select e2.member_id from tour_entry e2 where e2.tour_id = 36);
+-- same as above (has more rows because tables are different and some members have not entered any tours)
+select m.id
+from member m
+where not exists(
+        select *
+        from tour_entry e
+        where e.member_id = m.id
+          and e.tour_id = 36
+    );
+-- a DIVISION operation. Find all members who have entered ALL tours
+-- TODO: work on this one more
+select m.lastname, m.id
+from member m
+where not exists(
+        select *
+        from tour t
+        where not exists(
+                select *
+                from tour_entry e
+                where e.member_id = m.id
+                  and e.tour_id = t.id
+            )
+    );
+
