@@ -330,4 +330,99 @@ where not exists(
                   and e.tour_id = t.id
             )
     );
+-- ====================================================================================================================
+-- count members who have a coach
+select count(*)
+from member m
+where m.coach_id is not null;
+-- same as above
+select count(m.coach_id)
+from member m;
+
+-- how many coaches are there?
+select count(distinct coach_id)
+from member;
+-- same as above
+select count(*)
+from (select distinct coach_id from member where coach_id is not null) coaches;
+
+-- will calculate the AVG of members who have a handicap
+select avg(handicap)
+from member;
+-- to avoid the rounding and precision loss convert to float
+select round(avg(handicap * 1.0), 2)
+from member;
+-- will calculate the AVG of all members, regardless of a handicap
+select sum(handicap) / count(*)
+from member;
+
+-- use an expression in the avg()
+select avg(o.price * o.quantity)
+from order_info o;
+
+select min(handicap) as min_handicap, max(handicap) as max_handicap, avg(handicap) as avg_handicap
+from member;
+
+-- how many times each member entered tours
+select member_id, count(*) as entries
+from tour_entry
+group by member_id;
+-- get names with number of entries
+select m.id, m.firstname, m.lastname, count(*) as entries
+from member m inner join tour_entry te on m.id = te.member_id
+group by m.id, m.firstname, m.lastname;
+-- count of entries for each tour of 2015
+select tour_id, count(*)
+from tour_entry
+where year = 2015
+group by tour_id;
+-- count of entries for each tour for each year
+select tour_id, year, count(*)
+from tour_entry
+group by tour_id, year;
+-- count of entries for each tour with num of entries >= 2
+select tour_id, year, count(*)
+from tour_entry
+group by tour_id, year
+having count(*) >= 2;
+-- get ids of members who have entered > 4 tours
+select member_id, count(*)
+from tour_entry
+group by member_id
+having count(*) > 2;
+-- get ids of members who have entered > 2 open tours
+select member_id, count(*)
+from tour_entry e inner join tour t on t.id = e.tour_id
+where t.type = 'open'
+group by member_id
+having count(*) > 2
+order by count(*);
+
+select min(handicap) as minimum, round(avg(handicap), 2) as average, member_type
+from member
+group by member_type;
+
+-- an equivalent to the division operator. Get member ids who have entered all tours
+select member_id, count(distinct tour_id)
+from tour_entry
+group by member_id
+having count(distinct tour_id) = (select count(distinct id) from tour);
+
+-- select members whose handicap is higher that avg handicap
+select * from member
+where handicap > (select avg(handicap) from member);
+
+-- find members who have entered at least 2 tours
+select * from member
+where id in (select e.member_id from tour_entry e group by member_id having count(*) >= 2);
+-- same as above
+select * from member m
+where (select count(*) from tour_entry e where e.member_id = m.id) >= 2;
+-- get an average number of tours entered by members
+select avg(cc.c)
+from (
+         select count(*) as c
+         from tour_entry e
+         group by member_id
+     ) cc;
 
