@@ -76,6 +76,12 @@ create table tour_entry
     year      integer
 );
 
+create table order_info(
+    id smallint primary key,
+    price int,
+    quantity int
+);
+
 -- VIEWS
 create view member_name_and_team as
 select concat(m.lastname, ' ', m.firstname) as fullname, t.name as teamname

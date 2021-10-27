@@ -6,7 +6,7 @@ values ('TeamA', 'mon'),
 
 insert into member
 (id, lastname, firstname, phone, handicap, join_date, gender, team, member_type, coach_id)
-values (118, 'McKenzie', 'Melissa', '123321', 10, '05/10/1999', 'f', 'TeamA', 'junior', 123),
+values (118, 'McKenzie', 'Melissa', '123321', 10.1, '05/10/1999', 'f', 'TeamA', 'junior', 123),
        (119, 'Lock', 'John', '345543', 45, '05/9/1997', 'm', 'TeamA', 'senior', 123),
        (120, 'Jarah', 'Said', '567765', null, '05/8/1996', 'm', 'TeamB', 'senior', 123),
        (121, 'Soyer', 'Tom', '789987', 25, '05/7/1996', 'm', 'TeamA', 'senior', 123),
@@ -78,3 +78,10 @@ values (118, 24, 2014),
        (127, 36, 2016),
        (127, 38, 2016),
        (127, 40, 2016);
+
+insert into order_info
+(id, price, quantity)
+values (1, 10, 10),
+       (2, 10, 15),
+       (3, 10, 20),
+       (4, 10, 25);
