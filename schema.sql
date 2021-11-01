@@ -38,22 +38,22 @@ alter table team
 
 create table club_a
 (
-    member_id bigint primary key,
-    lastname varchar(20),
-    handicap integer,
+    member_id   bigint primary key,
+    lastname    varchar(20),
+    handicap    integer,
     member_type member_type,
 
-    foreign key (member_id) references member(id)
+    foreign key (member_id) references member (id)
 );
 
 create table club_b
 (
-    mem_id bigint primary key,
+    mem_id     bigint primary key,
     familyName varchar(20),
-    grade member_type,
-    hand_cap integer,
+    grade      member_type,
+    hand_cap   integer,
 
-    foreign key (mem_id) references member(id)
+    foreign key (mem_id) references member (id)
 );
 
 create table type_fee
@@ -76,10 +76,24 @@ create table tour_entry
     year      integer
 );
 
-create table order_info(
-    id smallint primary key,
-    price int,
+create table order_info
+(
+    id       smallint primary key,
+    price    int,
     quantity int
+);
+
+create table income
+(
+    month  smallint,
+    income integer
+);
+
+create table income_with_area
+(
+    month  smallint,
+    area   varchar(10),
+    income integer
 );
 
 -- VIEWS

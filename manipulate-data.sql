@@ -425,4 +425,70 @@ from (
          from tour_entry e
          group by member_id
      ) cc;
+-- ====================================================================================================================
+-- use the over() function to allow other columns than aggregates in the result
+select id,
+       firstname,
+       lastname,
+       handicap,
+       avg(handicap * 1.0) over ()            as avg,
+       handicap - avg(handicap * 1.0) over () as difference,
+       count(*) over ()                       as count
+from member;
+-- use 'partition by' to count rows based on 'group by'
+select member_id, year, tour_id,
+       count(*) over() as total_count,
+       count(*) over(partition by tour_id) as tour_count,
+       count(*) over(partition by tour_id, year) as tour_year_count
+from tour_entry e
+order by tour_id; -- add order by to better display output (will group the same tour_id values together)
 
+-- will count the same year values and summarize them cumulatively
+select member_id, tour_id, year,
+       count(*) over(order by year) as cumulative
+from tour_entry;
+-- select the month, its income and the running total sum for current and previous months
+select i.month, i.income,
+       sum(i.income) over(order by income) as runningTotal
+from income i;
+
+-- rank members by handicap
+select id, handicap,
+       rank() over (order by handicap) as rank
+from member
+where handicap is not null;
+-- get all rows with a total income
+select month, area, income,
+       sum(income) over() as total_sum
+from income_with_area;
+-- get all rows with a running total per month
+select month, area, income,
+       sum(income) over(order by month) as running_total
+from income_with_area;
+-- get all rows partitioned by are with area running total
+select month, area, income,
+       sum(income) over(partition by area order by month) as area_running_total
+from income_with_area;
+-- calculate a running average for each area (change the values to have different results)
+select month, area, income,
+       avg(income) over(partition by area order by month) as running_avg
+from income_with_area;
+-- same as above with explicit default values for the ROWS<>
+select month, area, income,
+       avg(income) over(
+           partition by area
+           order by month
+           rows between unbounded preceding and current row ) as running_avg
+from income_with_area;
+-- get running 3 months averages (for each month we take an average that includes the current month, the one preceding, and the one following)
+select month, area, income,
+       avg(income) over(
+           partition by area
+           order by month
+           rows between unbounded preceding and current row ) as running_avg,
+       avg(income) over(
+           partition by area
+           order by month
+           rows between 1 preceding and 1 following
+           ) as area_3_months_avg
+from income_with_area;
