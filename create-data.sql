@@ -80,8 +80,34 @@ values (118, 24, 2014),
        (127, 40, 2016);
 
 insert into order_info
-(id, price, quantity)
+    (id, price, quantity)
 values (1, 10, 10),
        (2, 10, 15),
        (3, 10, 20),
        (4, 10, 25);
+
+insert into income
+    (month, income)
+values (1, 1000),
+       (2, 2000),
+       (3, 3000),
+       (4, 4000),
+       (5, 5000);
+
+insert into income_with_area
+(month, area, income)
+values (1, 'area1', 100),
+       (2, 'area1', 100),
+       (3, 'area1', 100),
+       (4, 'area1', 100),
+       (5, 'area1', 100),
+       (1, 'area2', 100),
+       (2, 'area2', 100),
+       (3, 'area2', 100),
+       (4, 'area2', 100),
+       (5, 'area2', 100),
+       (1, 'area3', 100),
+       (2, 'area3', 100),
+       (3, 'area3', 100),
+       (4, 'area3', 100),
+       (5, 'area3', 100);
