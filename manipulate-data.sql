@@ -533,3 +533,44 @@ where id not in(select member_id from tour_entry);
 
 
 -- todo: has anyone coached all the juniors? (division)
+
+-- deliberately create a table with no PK
+create table with_no_pk
+(
+    one smallint,
+    two smallint
+);
+-- insert broken values
+insert into with_no_pk
+(one, two)
+values
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 1),
+(1, 1),
+(1, 1),
+(2, 1),
+(3, 1);
+-- find out whether there are entries with duplicate (one) values
+select one, count(one)
+from with_no_pk
+group by one
+having count(one) > 1;
+
+-- if there are same duplicates
+-- to solve the problem we may create a new clean table
+create table with_pk(
+    one smallint primary key ,
+    two smallint
+);
+
+-- and then insert distinct values
+insert into with_pk
+select distinct one, two from with_no_pk;
+
+select * from with_pk;
+
+-- fix the member table by removing spaces from the firstname
+update member
+set firstname = ltrim(rtrim(firstname));

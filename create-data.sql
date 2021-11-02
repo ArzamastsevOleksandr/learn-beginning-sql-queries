@@ -4,6 +4,7 @@ values ('TeamA', 'mon'),
        ('TeamB', 'wed'),
        ('TeamC', 'fri');
 
+-- todo: create a table team membership to allow 1-n relationships
 insert into member
 (id, lastname, firstname, phone, handicap, join_date, gender, team, member_type, coach_id)
 values (118, 'McKenzie', 'Melissa', '123321', 10.1, '05/10/1999', 'f', 'TeamA', 'junior', 123),
