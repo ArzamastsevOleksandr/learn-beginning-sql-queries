@@ -101,3 +101,5 @@ create view member_name_and_team as
 select concat(m.lastname, ' ', m.firstname) as fullname, t.name as teamname
 from member m
          join team t on m.team = t.name;
+
+-- todo: use dbeaver to get the db visual schema

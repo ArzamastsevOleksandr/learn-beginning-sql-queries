@@ -492,3 +492,44 @@ select month, area, income,
            rows between 1 preceding and 1 following
            ) as area_3_months_avg
 from income_with_area;
+-- find all males who entered the Leeston tournament
+select *
+from tour_entry e
+         inner join tour t
+                    on t.id = e.tour_id
+         inner join member m
+                    on m.id = e.member_id
+where gender = 'm'
+  and t.name = 'Leeston';
+
+create view all_tour_info
+as
+select e.member_id as member_id,
+       e.tour_id   as tour_id,
+       e.year,
+       t.name      as tour_name,
+       t.type      as tour_type
+from tour_entry e
+         inner join tour t on t.id = e.tour_id;
+
+-- same as above, but with a view
+select *
+from all_tour_info
+         inner join member m
+                    on m.id = all_tour_info.member_id
+where m.gender = 'm'
+  and all_tour_info.tour_name = 'Leeston';
+
+-- find all members who have never entered a tour
+select * from member m
+where not exists(select * from tour_entry where member_id = m.id);
+-- same as above
+select m.id from member m
+except
+select member_id from tour_entry;
+-- same as above
+select * from member
+where id not in(select member_id from tour_entry);
+
+
+-- todo: has anyone coached all the juniors? (division)
